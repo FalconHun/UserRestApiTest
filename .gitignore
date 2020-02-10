@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/UserService/.vs/UserService
+/UserService/bin/Debug/netcoreapp3.1
+/UserService/obj
+/UserService/UserService.csproj.user
