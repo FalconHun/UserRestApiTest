@@ -7,3 +7,7 @@
 /UserService/bin/Debug/netcoreapp3.1
 /UserService/obj
 /UserService/UserService.csproj.user
+/LoggerService/.vs/LoggerService
+/LoggerService/bin
+/LoggerService/obj
+/LoggerService/LoggerService.csproj.user
