@@ -9,10 +9,8 @@
         public string QueueName { get; set; }
         public string RoutingKey { get; set; }
 
-        public ConnectionParamProvider()
+        public ConnectionParamProvider(IEnvironmentWrapper env)
         {
-            IEnvironmentWrapper env = new EnvironmentWrapper();
-
             HostName = env.GetValue("hostname", "localhost");
             if (!int.TryParse(env.GetValue("port", ""), out int port))
             {

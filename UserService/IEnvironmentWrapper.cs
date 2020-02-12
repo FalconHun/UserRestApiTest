@@ -1,6 +1,6 @@
 ﻿namespace UserService
 {
-    interface IEnvironmentWrapper
+    public interface IEnvironmentWrapper
     {
         string GetValue(string key, string fallback);
     }
