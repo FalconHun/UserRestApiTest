@@ -55,14 +55,9 @@ namespace UserService
 
             app.UseAuthorization();
 
-            //app.UseEndpoints(endpoints =>
-            //{
-            //    endpoints.MapControllers();
-            //});
-
-            app.Run(async context =>
+            app.UseEndpoints(endpoints =>
             {
-                await context.Response.WriteAsync(context.Request.Query.ToString());
+                endpoints.MapControllers();
             });
         }
     }
