@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using UserService.Models;
 using UserService.Options;
 
 namespace UserService
@@ -20,12 +22,14 @@ namespace UserService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            SetupDbContext(services);
+
             services.AddControllers();
 
             services.AddSingleton<IEnvironmentWrapper, EnvironmentWrapper>();
             services.AddSingleton<IConnectionParamProvider, ConnectionParamProvider>();
             services.AddSingleton<IRabbitMqMessagePublisher, RabbitMqMessagePublisher>();
-            services.AddSingleton<IUserManager, UserManager>();
+            services.AddScoped<IUserManager, UserManager>();
 
             services.AddSwaggerGen(x => x.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "UserManager API", Version = "v1" }));
 
@@ -59,6 +63,35 @@ namespace UserService
             {
                 endpoints.MapControllers();
             });
+
+            PrepareDb(app);
+        }
+
+        private void SetupDbContext(IServiceCollection services)
+        {
+            var databaseType = Configuration["DatabaseType"] ?? "InMemory";
+
+            if (databaseType == "InMemory")
+            {
+                services.AddDbContext<UserContext>(options =>
+                {
+                    options.UseInMemoryDatabase("UserDatabase");
+                });
+            }
+            else if (databaseType == "Sql")
+            {
+                var dbConnectionString = Configuration["DBConnectionString"] ?? "UnknownConnectionString";
+
+                services.AddDbContext<UserContext>(options =>
+                {
+                    options.UseSqlServer(dbConnectionString);
+                });
+            }
+        }
+
+        private void PrepareDb(IApplicationBuilder app)
+        {
+            PrepSqlDb.PrepPopulation(app);
         }
     }
 }

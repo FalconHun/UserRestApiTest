@@ -6,7 +6,12 @@ namespace UserService
 {
     public class UserManager : IUserManager
     {
-        private List<User> users = new List<User>();
+        private readonly UserContext context;
+
+        public UserManager(UserContext context)
+        {
+            this.context = context;
+        }
 
         public User Create(string firstName, string lastName, int age)
         {
@@ -17,7 +22,8 @@ namespace UserService
                 LastName = lastName,
                 Age = age
             };
-            users.Add(user);
+            context.Users.Add(user);
+            SaveChanges();
 
             return user;
         }
@@ -30,7 +36,9 @@ namespace UserService
             {
                 return false;
             }
-            return users.Remove(user);
+            context.Users.Remove(user);
+            SaveChanges();
+            return true;
         }
 
         public User Get(string id)
@@ -40,7 +48,7 @@ namespace UserService
 
         public User[] GetAll()
         {
-            return users.ToArray();
+            return context.Users.ToArray();
         }
 
         public User Update(string id, User user)
@@ -55,12 +63,19 @@ namespace UserService
             userToUpdate.LastName = user.LastName;
             userToUpdate.Age = user.Age;
 
+            SaveChanges();
+
             return userToUpdate;
         }
 
         private User FindUser(string id)
         {
-            return users.FirstOrDefault(user => user.Id.Equals(id));
+            return context.Users.FirstOrDefault(user => user.Id.Equals(id));
+        }
+
+        private void SaveChanges()
+        {
+            context.SaveChanges();
         }
     }
 }

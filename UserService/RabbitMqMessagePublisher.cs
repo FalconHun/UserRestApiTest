@@ -74,6 +74,8 @@ namespace UserService
 
             var manualResetEventSlim = new ManualResetEventSlim(false);
 
+            int tryCount = 3;
+
             while (!manualResetEventSlim.Wait(2000))
             {
                 try
@@ -97,6 +99,9 @@ namespace UserService
                 }
                 catch
                 {
+                    if (tryCount == 0)
+                        throw;
+                    tryCount--;
                 }
             }
         }

@@ -13,7 +13,9 @@
       "launchBrowser": true,
       "launchUrl": "api/v1/users",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DBConnectionString": "Server=EPHUBUDW2809\\SQLEXPRESS;Initial Catalog=Users;Integrated Security=SSPI",
+        "DatabaseType": "Sql"
       }
     },
     "UserService": {
@@ -30,7 +32,12 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "publishAllPorts": true,
-      "useSSL": false
+      "useSSL": false,
+      "environmentVariables": {
+        "DBConnectionString": "Server=host.docker.internal\\SQLEXPRESS;Initial Catalog=UsersDatabase;User Id=ServiceUser;Password=welcome;",
+        "DatabaseType": "Sql"
+      }
+
     }
   }
 }
