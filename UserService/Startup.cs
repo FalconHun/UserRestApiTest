@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using UserService.Models;
+using UserService.DataAccess;
 using UserService.Options;
 
 namespace UserService
@@ -29,7 +28,6 @@ namespace UserService
             services.AddSingleton<IEnvironmentWrapper, EnvironmentWrapper>();
             services.AddSingleton<IConnectionParamProvider, ConnectionParamProvider>();
             services.AddSingleton<IRabbitMqMessagePublisher, RabbitMqMessagePublisher>();
-            services.AddScoped<IUserManager, UserManager>();
 
             services.AddSwaggerGen(x => x.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "UserManager API", Version = "v1" }));
 
@@ -73,25 +71,40 @@ namespace UserService
 
             if (databaseType == "InMemory")
             {
-                services.AddDbContext<UserContext>(options =>
+                services.AddDbContext<SqlDbContext>(options =>
                 {
                     options.UseInMemoryDatabase("UserDatabase");
                 });
+
+                services.AddScoped<IUserManager, UserManagerSql>();
             }
             else if (databaseType == "Sql")
             {
                 var dbConnectionString = Configuration["DBConnectionString"] ?? "UnknownConnectionString";
 
-                services.AddDbContext<UserContext>(options =>
+                services.AddDbContext<SqlDbContext>(options =>
                 {
                     options.UseSqlServer(dbConnectionString);
                 });
+
+                services.AddScoped<IUserManager, UserManagerSql>();
+            }
+            else if (databaseType == "MongoDb")
+            {
+                services.Configure<MongoDbContextOptions>(options =>
+                {
+                    options.ConnectionString = Configuration["DBConnectionString"] ?? "TestConnection";
+                    options.Database = Configuration["MongoDbDatabase"] ?? "TestDatabase";
+                });
+
+                services.AddScoped<MongoDbContext, MongoDbContext>();
+                services.AddScoped<IUserManager, UserManagerMongoDb>();
             }
         }
 
         private void PrepareDb(IApplicationBuilder app)
         {
-            PrepSqlDb.PrepPopulation(app);
+            PrepDb.PrepPopulation(app);
         }
     }
 }

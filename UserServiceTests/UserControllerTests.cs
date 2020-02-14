@@ -5,6 +5,7 @@ using NUnit.Framework;
 using UserService;
 using UserService.Controllers;
 using UserService.Models;
+using UserService.DataAccess;
 using System.Linq;
 
 namespace UserServiceTests

@@ -1,26 +1,27 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using UserService.Models;
+using UserService.DataAccess;
 using System.Linq;
 
 namespace UserService.Tests
 {
-    public class UserManagerTests
+    public class UserManagerSqlTests
     {
-        private UserManager userManager;
-        private UserContext userContext;
+        private UserManagerSql userManager;
+        private SqlDbContext userContext;
 
         [SetUp]
         public void Setup()
         {
-            var options = new DbContextOptionsBuilder<UserContext>().UseInMemoryDatabase(databaseName: "UserDatabase").Options;
+            var options = new DbContextOptionsBuilder<SqlDbContext>().UseInMemoryDatabase(databaseName: "UserDatabase").Options;
 
-            userContext = new UserContext(options);
+            userContext = new SqlDbContext(options);
             foreach (var user in userContext.Users.ToArray())
             {
                 userContext.Remove(user);
             }
-            userManager = new UserManager(userContext);
+            userManager = new UserManagerSql(userContext);
         }
 
         [Test]

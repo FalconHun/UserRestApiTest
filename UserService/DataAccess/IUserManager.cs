@@ -1,6 +1,6 @@
 ﻿using UserService.Models;
 
-namespace UserService
+namespace UserService.DataAccess
 {
     public interface IUserManager
     {

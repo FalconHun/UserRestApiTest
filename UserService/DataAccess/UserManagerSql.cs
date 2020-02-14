@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UserService.Models;
 
-namespace UserService
+namespace UserService.DataAccess
 {
-    public class UserManager : IUserManager
+    public class UserManagerSql : IUserManager
     {
-        private readonly UserContext context;
+        private readonly SqlDbContext context;
 
-        public UserManager(UserContext context)
+        public UserManagerSql(SqlDbContext context)
         {
             this.context = context;
         }

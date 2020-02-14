@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using UserService.Models;
+using UserService.DataAccess;
 
 namespace UserService.Controllers
 {
